@@ -46,72 +46,72 @@ def test_cli_name(test_apps):
 
 
 def test_find_best_app(test_apps):
-    class Module:
+    class module_with_app:
         app = Flask("appname")
 
-    assert find_best_app(Module) == Module.app
+    assert find_best_app(module_with_app) == module_with_app.app
 
-    class Module:
+    class module_with_app_two:
         application = Flask("appname")
 
-    assert find_best_app(Module) == Module.application
+    assert find_best_app(module_with_app_two) == module_with_app_two.application
 
-    class Module:
+    class module_with_app_three:
         myapp = Flask("appname")
 
-    assert find_best_app(Module) == Module.myapp
+    assert find_best_app(module_with_app_three) == module_with_app_three.myapp
 
-    class Module:
+    class module_with_static_method:
         @staticmethod
         def create_app():
             return Flask("appname")
 
-    app = find_best_app(Module)
+    app = find_best_app(module_with_static_method)
     assert isinstance(app, Flask)
     assert app.name == "appname"
 
-    class Module:
+    class module_with_static_method_two:
         @staticmethod
         def create_app(**kwargs):
             return Flask("appname")
 
-    app = find_best_app(Module)
+    app = find_best_app(module_with_static_method_two)
     assert isinstance(app, Flask)
     assert app.name == "appname"
 
-    class Module:
+    class module_with_static_method_three:
         @staticmethod
         def make_app():
             return Flask("appname")
 
-    app = find_best_app(Module)
+    app = find_best_app(module_with_static_method_three)
     assert isinstance(app, Flask)
     assert app.name == "appname"
 
-    class Module:
+    class module_with_app_and_static_method:
         myapp = Flask("appname1")
 
         @staticmethod
         def create_app():
             return Flask("appname2")
 
-    assert find_best_app(Module) == Module.myapp
+    assert find_best_app(module_with_app_and_static_method) == module_with_app_and_static_method.myapp
 
-    class Module:
+    class module_with_app_and_static_method_two:
         myapp = Flask("appname1")
 
         @staticmethod
         def create_app():
             return Flask("appname2")
 
-    assert find_best_app(Module) == Module.myapp
+    assert find_best_app(module_with_app_and_static_method_two) == module_with_app_and_static_method_two.myapp
 
-    class Module:
+    class module:
         pass
 
-    pytest.raises(NoAppException, find_best_app, Module)
+    pytest.raises(NoAppException, find_best_app, module)
 
-    class Module:
+    class module:
         myapp1 = Flask("appname1")
         myapp2 = Flask("appname2")
 
