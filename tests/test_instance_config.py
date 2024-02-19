@@ -4,12 +4,12 @@ import pytest
 
 import flask
 
-from config_module_app import app as config_module_app
-from config_package_app import app as config_package_app
-from namespace.package2 import app as namespace_package2_app
+from config_module_app import app as mod_app
+from config_package_app import app as pck_app
+from namespace.package2 import app as ns_pkg2_app
 from site_app import app as site_app
-from installed_package import app as installed_package_app
-import site_package as site_package
+from installed_package import app as inst_pkg_app
+import site_package as site_pkg
 
 
 def test_explicit_instance_paths(modules_tmp_path):
@@ -29,7 +29,7 @@ def test_uninstalled_module_paths(modules_tmp_path, purge_module):
     )
     purge_module("config_module_app")
 
-    assert config_module_app.instance_path == os.fspath(modules_tmp_path / "instance")
+    assert mod_app.instance_path == os.fspath(modules_tmp_path / "instance")
     
 
 
@@ -44,7 +44,7 @@ def test_uninstalled_package_paths(modules_tmp_path, purge_module):
     )
     purge_module("config_package_app")
 
-    assert config_package_app.instance_path == os.fspath(modules_tmp_path / "instance")
+    assert pck_app.instance_path == os.fspath(modules_tmp_path / "instance")
 
 
 def test_uninstalled_namespace_paths(tmp_path, monkeypatch, purge_module):
@@ -61,7 +61,7 @@ def test_uninstalled_namespace_paths(tmp_path, monkeypatch, purge_module):
     purge_module("namespace.package2")
     purge_module("namespace")
 
-    assert namespace_package2_app.instance_path == os.fspath(project2 / "instance")
+    assert ns_pkg2_app.instance_path == os.fspath(project2 / "instance")
 
 
 def test_installed_module_paths(
@@ -89,7 +89,7 @@ def test_installed_package_paths(
     (app / "__init__.py").write_text("import flask\napp = flask.Flask(__name__)\n")
     purge_module("installed_package")
 
-    assert installed_package_app.instance_path == os.fspath(
+    assert inst_pkg_app.instance_path == os.fspath(
         modules_tmp_path / "var" / "installed_package-instance"
     )
 
@@ -104,6 +104,6 @@ def test_prefix_package_paths(
 
 
 
-    assert site_package.app.instance_path == os.fspath(
+    assert site_pkg.app.instance_path == os.fspath(
         modules_tmp_path / "var" / "site_package-instance"
     )
